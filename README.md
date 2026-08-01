@@ -9,6 +9,8 @@ Learn React by doing it live — a single-file teaching playground with a real-t
 - **🧩 27-component library** — Button, Card, Badge, Avatar, Alert, Table, Navbar, Modal, Skeleton, Tabs, Todo, Form, Accordion, Stopwatch, Color Picker, Clock, Profile Card + Switch, Progress, Dropdown, Tooltip, Pagination, Breadcrumb, Spinner, Stat Card, Empty State, Rating
 - **🔗 Deep links** — `#/usestate`, `#/component/modal`, `#/repl`… shareable URLs
 - **🔎 search**, **🌓 dark/light toggle** (localStorage), **📋 copy**, inline error panel, Ctrl+Enter re-run
+- **🙈 Focus mode** — Tailwind class lines collapse to `some css` in the editor (preview still renders the real thing); toggle with the 👁 button to see the full code
+- **💡 Try it tips** — every lesson and component ships with a hands-on exercise suggestion
 
 ## How to use
 1. Open `index.html` in any browser — no server needed.

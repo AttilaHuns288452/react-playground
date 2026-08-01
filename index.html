@@ -101,6 +101,8 @@
   .points{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 16px}
   .point{font-size:11.5px;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:5px 12px}
   .point b{color:var(--accent)}
+  .try-box{display:none;margin:0 0 14px;border:1px solid rgba(61,220,132,.3);background:rgba(61,220,132,.07);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--text);line-height:1.6}
+  .try-box b{color:var(--green)}
   .split{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:380px;flex:1}
   .pane{display:flex;flex-direction:column;min-width:0;min-height:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface)}
   .pane-head{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--surface)}
@@ -124,6 +126,7 @@
   <div class="spacer"></div>
   <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Ready</span></div>
   <button class="btn" id="copyBtn">📋 Copy</button>
+  <button class="btn" id="cssBtn" title="Show / hide Tailwind class lines">👁 css</button>
   <button class="btn" id="themeBtn">☀️</button>
   <a class="btn" href="https://attilahuns288452.github.io/tailwind-playground/" title="Tailwind CSS Playground" style="text-decoration:none">🎨</a>
 </header>
@@ -160,6 +163,7 @@
       <h2 id="lessonTitle"></h2>
       <p class="desc" id="lessonDesc"></p>
       <div class="points" id="lessonPoints"></div>
+      <div class="try-box" id="tryBox"><b>💡 Try it:</b> <span id="tryText"></span></div>
     </div>
     <div class="split">
       <div class="pane">
@@ -196,6 +200,7 @@
 <script src="js/components2.js"></script>
 <script src="js/components3.js"></script>
 <script src="js/lessons3.js"></script>
+<script src="js/guide.js"></script>
 <script>
 /* ============ REPL ============ */
 const editor=document.getElementById('editor'), preview=document.getElementById('preview'),
@@ -204,8 +209,8 @@ const editor=document.getElementById('editor'), preview=document.getElementById(
 let root=null, runTimer=null;
 const HOOKS=['useState','useEffect','useRef','useMemo','useCallback','useReducer','useContext','useLayoutEffect'];
 
-function compile(){
-  const code=editor.value, t0=performance.now();
+function compile(force){
+  const code=force||editor.value, t0=performance.now();
   try{
     const out=Babel.transform(code,{presets:['react']}).code;
     const factory=new Function('React','createElement',...HOOKS,out+'\n;return typeof App!=="undefined"?App:null;');
@@ -227,9 +232,34 @@ function compile(){
   }
 }
 function schedule(){clearTimeout(runTimer);runTimer=setTimeout(compile,350);}
-editor.addEventListener('input',schedule);
+editor.addEventListener('input',()=>{if(hideCss){setHideCss(false);}schedule();});
 editor.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();compile();}});
-document.getElementById('copyBtn').addEventListener('click',()=>copy(editor.value));
+
+/* ============ CSS HIDE TOGGLE ============ */
+let realCode='';
+let hideCss=localStorage.getItem('react-playground-hidecss')!=='0'; // default: hidden
+const cssBtn=document.getElementById('cssBtn');
+function sanitize(code){
+  return code
+    .replace(/className="[^"]*"/g,'className="some css"')
+    .replace(/className=\{[^}]*\}/g,'className="some css"');
+}
+function setHideCss(v){
+  hideCss=v;
+  localStorage.setItem('react-playground-hidecss',v?'1':'0');
+  cssBtn.textContent=v?'👁 css':'🙈 css';
+  cssBtn.title=v?'Show Tailwind class lines':'Hide Tailwind class lines';
+  // re-render current lesson from the real code
+  if(current.type==='lesson'||current.type==='component'){
+    const code=realCode||editor.value;
+    editor.value=v?sanitize(code):code;
+    compile(code);
+  }else if(current.type==='repl'){
+    if(!editor.value.trim())editor.value=findLesson('usestate').code;
+  }
+}
+cssBtn.addEventListener('click',()=>setHideCss(!hideCss));
+document.getElementById('copyBtn').addEventListener('click',()=>copy(realCode||editor.value));
 
 /* ============ NAV ============ */
 const views={home:document.getElementById('viewHome'),lesson:document.getElementById('viewLesson'),components:document.getElementById('viewComponents')};
@@ -252,9 +282,16 @@ function openRepl(){current={type:'repl',id:'repl'};show('lesson');
   document.getElementById('lessonTitle').textContent='Free-form REPL';
   document.getElementById('lessonDesc').textContent='Write any component you like. useState, useEffect, useRef and friends are available directly — define App and it renders.';
   document.getElementById('lessonPoints').innerHTML='';
+  realCode='';
+  renderTry('repl');
   if(!editor.value.trim()){editor.value=findLesson('usestate').code;}
   compile();setActiveNav('repl');closeSidebar();location.hash='#/repl';}
 
+function renderTry(id){
+  const t=(typeof TRY!=='undefined'&&TRY[id])||'';
+  document.getElementById('tryBox').style.display=t?'block':'none';
+  document.getElementById('tryText').textContent=t;
+}
 function openSection(id){
   const s=findLesson(id); if(!s)return;
   current={type:'lesson',id};
@@ -263,7 +300,9 @@ function openSection(id){
   document.getElementById('lessonTitle').textContent=s.title;
   document.getElementById('lessonDesc').textContent=s.desc;
   document.getElementById('lessonPoints').innerHTML=(s.points||[]).map(p=>'<span class="point">'+p+'</span>').join('');
-  editor.value=s.code;compile();setActiveNav(id);closeSidebar();location.hash='#/'+id;
+  realCode=s.code;
+  editor.value=hideCss?sanitize(s.code):s.code;
+  compile(s.code);renderTry(s.id);setActiveNav(id);closeSidebar();location.hash='#/'+id;
 }
 function openComponent(id){
   const c=COMPONENTS.find(x=>x.id===id); if(!c)return;
@@ -273,7 +312,9 @@ function openComponent(id){
   document.getElementById('lessonTitle').textContent=c.name;
   document.getElementById('lessonDesc').textContent=c.desc;
   document.getElementById('lessonPoints').innerHTML='<span class="point"><b>component</b> ready to copy</span>';
-  editor.value=c.code;compile();setActiveNav('component-'+id);closeSidebar();location.hash='#/component/'+id;
+  realCode=c.code;
+  editor.value=hideCss?sanitize(c.code):c.code;
+  compile(c.code);renderTry(id);setActiveNav('component-'+id);closeSidebar();location.hash='#/component/'+id;
 }
 
 /* ============ SIDEBAR (tailwind-playground style) ============ */
@@ -378,6 +419,7 @@ renderHome();
 renderSidebar('');
 if(!editor.value.trim()){editor.value=findLesson('usestate').code;}
 route();
+setHideCss(hideCss);
 </script>
 </body>
 </html>
