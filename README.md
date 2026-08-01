@@ -5,6 +5,7 @@ Learn React by doing it live — a single-file teaching playground with a real-t
 ## What it is
 - **📚 20 interactive lessons** across 5 categories — JSX, Components & Props, State & Events, Hooks (useState/useEffect/useRef/useMemo/useCallback/useReducer/useContext), Styling & Error Boundaries
 - **⚛ Live REPL** — every lesson ships runnable JSX: edit the code, watch it render instantly (React 18 + Babel standalone via CDN)
+- **🎨 Tailwind CSS built in** — all lessons & components are styled with Tailwind utility classes (CDN), so you learn React and Tailwind together
 - **🧩 17-component library** — Button, Card, Badge, Avatar, Alert, Table, Navbar, Modal, Skeleton, Tabs, Todo, Form, Accordion, Stopwatch, Color Picker, Clock, Profile Card
 - **🔗 Deep links** — `#/usestate`, `#/component/modal`, `#/repl`… shareable URLs
 - **🔎 search**, **🌓 dark/light toggle** (localStorage), **📋 copy**, inline error panel, Ctrl+Enter re-run

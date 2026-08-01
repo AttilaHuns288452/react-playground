@@ -1,4 +1,4 @@
-/* React Playground — lesson data (part 2: Hooks, Styling, Advanced) */
+/* React Playground — lesson data (part 2: Hooks, Styling, Advanced) — Tailwind edition */
 CATEGORIES.push(
   {
     name: 'Hooks', icon: '🪝',
@@ -25,18 +25,19 @@ CATEGORIES.push(
   };
 
   return (
-    <div className="demo-card" style={{ textAlign: 'center' }}>
-      <span className="demo-tag">useEffect + cleanup</span>
-      <h2 style={{ margin: '10px 0 4px', fontSize: 18 }}>Stopwatch</h2>
-      <div style={{ fontFamily: 'JetBrains Mono', fontSize: 38, fontWeight: 700,
-        margin: '10px 0 16px', letterSpacing: 2 }}>{fmt(ms)}</div>
-      <div className="demo-row" style={{ justifyContent: 'center' }}>
-        <button className="demo-btn" onClick={() => setRunning(r => !r)}>
+    <div className="max-w-md w-full rounded-2xl border border-slate-700/60 bg-slate-900 p-6 text-center shadow-xl">
+      <span className="inline-block rounded-full bg-blue-500/15 px-2.5 py-0.5 text-[10px] font-semibold text-blue-400">useEffect + cleanup</span>
+      <h2 className="mt-2.5 text-lg font-bold text-slate-100">Stopwatch</h2>
+      <div className="my-2.5 font-mono text-4xl font-bold tracking-[.2em] text-slate-100">{fmt(ms)}</div>
+      <div className="flex items-center justify-center gap-2">
+        <button className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 px-4 py-2 text-[13px] font-semibold text-white transition hover:brightness-110"
+          onClick={() => setRunning(r => !r)}>
           {running ? '⏸ Pause' : '▶ Start'}
         </button>
-        <button className="demo-btn ghost" onClick={() => { setRunning(false); setMs(0); }}>Reset</button>
+        <button className="rounded-lg border border-slate-600 px-4 py-2 text-[13px] font-semibold text-slate-200 transition hover:border-blue-500"
+          onClick={() => { setRunning(false); setMs(0); }}>Reset</button>
       </div>
-      <p style={{ fontSize: 11, color: '#5a6a90', marginTop: 12 }}>
+      <p className="mt-3 text-[11px] text-slate-500">
         interval cleaned up when stopped or unmounted
       </p>
     </div>
@@ -54,19 +55,21 @@ CATEGORIES.push(
   renders.current++;
 
   return (
-    <div className="demo-card">
-      <span className="demo-tag">useRef</span>
-      <h2 style={{ margin: '10px 0 12px', fontSize: 18 }}>Refs: no re-render</h2>
-      <div className="demo-row" style={{ marginBottom: 10 }}>
-        <input ref={inputRef} className="demo-input" placeholder="Type here…"
-          value={typed} onChange={e => setTyped(e.target.value)} />
-        <button className="demo-btn" onClick={() => { inputRef.current.focus(); inputRef.current.select(); }}>
+    <div className="max-w-md w-full rounded-2xl border border-slate-700/60 bg-slate-900 p-6 shadow-xl">
+      <span className="inline-block rounded-full bg-blue-500/15 px-2.5 py-0.5 text-[10px] font-semibold text-blue-400">useRef</span>
+      <h2 className="mt-2.5 mb-3 text-lg font-bold text-slate-100">Refs: no re-render</h2>
+      <div className="mb-2.5 flex items-center gap-2">
+        <input ref={inputRef}
+          className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-[12.5px] text-slate-200 outline-none focus:border-blue-500"
+          placeholder="Type here…" value={typed} onChange={e => setTyped(e.target.value)} />
+        <button className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 px-3.5 py-2 text-[13px] font-semibold text-white transition hover:brightness-110"
+          onClick={() => { inputRef.current.focus(); inputRef.current.select(); }}>
           Focus
         </button>
       </div>
-      <p style={{ fontSize: 12.5, color: '#8895b8', lineHeight: 1.7 }}>
-        Typed: <b style={{ color: '#e4eaf5' }}>{typed || '(empty)'}</b><br />
-        Re-renders: <b style={{ color: '#f0d060' }}>{renders.current}</b> — typing
+      <p className="text-[12.5px] leading-relaxed text-slate-400">
+        Typed: <b className="text-slate-200">{typed || '(empty)'}</b><br />
+        Re-renders: <b className="text-amber-400">{renders.current}</b> — typing
         re-renders, but renders.current lives outside render.
       </p>
     </div>
@@ -90,21 +93,23 @@ CATEGORIES.push(
   }, [num]);
 
   return (
-    <div className="demo-card">
-      <span className="demo-tag">useMemo</span>
-      <h2 style={{ margin: '10px 0 12px', fontSize: 18 }}>Memoize the expensive part</h2>
-      <div className="demo-row" style={{ marginBottom: 12 }}>
-        <input className="demo-input" type="number" min="1" max="40" value={num}
+    <div className="max-w-md w-full rounded-2xl border border-slate-700/60 bg-slate-900 p-6 shadow-xl">
+      <span className="inline-block rounded-full bg-blue-500/15 px-2.5 py-0.5 text-[10px] font-semibold text-blue-400">useMemo</span>
+      <h2 className="mt-2.5 mb-3 text-lg font-bold text-slate-100">Memoize the expensive part</h2>
+      <div className="mb-3 flex items-center gap-2">
+        <input type="number" min="1" max="40" value={num}
+          className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-[12.5px] text-slate-200 outline-none focus:border-blue-500"
           onChange={e => setNum(+e.target.value)} />
-        <button className="demo-btn ghost" onClick={() => setTick(t => t + 1)}>
+        <button className="rounded-lg border border-slate-600 px-3.5 py-2 text-[13px] font-semibold text-slate-200 transition hover:border-blue-500"
+          onClick={() => setTick(t => t + 1)}>
           re-render ({tick})
         </button>
       </div>
-      <p style={{ fontSize: 13, color: '#8895b8' }}>
-        fib({num}) = <b style={{ color: '#3ddc84' }}>{fib.v}</b>{' '}
-        <span style={{ fontSize: 11 }}>({fib.ms}ms)</span>
+      <p className="text-[13px] text-slate-400">
+        fib({num}) = <b className="text-emerald-400">{fib.v}</b>{' '}
+        <span className="text-[11px]">({fib.ms}ms)</span>
       </p>
-      <p style={{ fontSize: 11.5, color: '#5a6a90', marginTop: 8 }}>
+      <p className="mt-2 text-[11.5px] text-slate-500">
         Clicking re-render is instant — the fib cache only invalidates when num changes.
       </p>
     </div>
@@ -118,7 +123,8 @@ CATEGORIES.push(
         code: `const Child = React.memo(function Child({ label, onClick }) {
   console.log('child rendered:', label);
   return (
-    <button className="demo-btn small ghost" onClick={onClick}>{label}</button>
+    <button className="rounded-lg border border-slate-600 px-3.5 py-1.5 text-[11px] font-semibold text-slate-200 transition hover:border-blue-500"
+      onClick={onClick}>{label}</button>
   );
 });
 
@@ -131,17 +137,18 @@ function App() {
   }, []);
 
   return (
-    <div className="demo-card">
-      <span className="demo-tag">useCallback + React.memo</span>
-      <h2 style={{ margin: '10px 0 12px', fontSize: 18 }}>Stable callbacks</h2>
-      <p style={{ fontSize: 13.5, marginBottom: 12 }}>
-        Count: <b style={{ color: '#3ddc84' }}>{count}</b>
+    <div className="max-w-md w-full rounded-2xl border border-slate-700/60 bg-slate-900 p-6 shadow-xl">
+      <span className="inline-block rounded-full bg-blue-500/15 px-2.5 py-0.5 text-[10px] font-semibold text-blue-400">useCallback + React.memo</span>
+      <h2 className="mt-2.5 mb-3 text-lg font-bold text-slate-100">Stable callbacks</h2>
+      <p className="mb-3 text-[13.5px] text-slate-300">
+        Count: <b className="text-emerald-400">{count}</b>
       </p>
-      <div className="demo-row">
-        <button className="demo-btn" onClick={() => setCount(c => c + 1)}>bump parent</button>
+      <div className="flex items-center gap-2">
+        <button className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 px-4 py-2 text-[13px] font-semibold text-white transition hover:brightness-110"
+          onClick={() => setCount(c => c + 1)}>bump parent</button>
         <Child label="memoized child" onClick={handleClick} />
       </div>
-      <p style={{ fontSize: 11.5, color: '#5a6a90', marginTop: 10 }}>
+      <p className="mt-2.5 text-[11.5px] text-slate-500">
         Open the console — the child only logs once, not on every parent bump.
       </p>
     </div>
@@ -167,16 +174,19 @@ function App() {
   const odd = state.count % 2 !== 0;
 
   return (
-    <div className="demo-card" style={{ textAlign: 'center' }}>
-      <span className="demo-tag">useReducer</span>
-      <h2 style={{ margin: '10px 0 4px', fontSize: 18 }}>Reducer Counter</h2>
-      <div style={{ fontSize: 42, fontWeight: 800, margin: '8px 0 14px' }}>{state.count}</div>
-      <div className="demo-row" style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
-        <button className="demo-btn" onClick={() => dispatch({ type: 'inc' })}>+1</button>
-        <button className="demo-btn ghost" onClick={() => dispatch({ type: 'dec' })}>-1</button>
-        <button className="demo-btn ghost" onClick={() => dispatch({ type: 'set', value: 0 })}>0</button>
+    <div className="max-w-md w-full rounded-2xl border border-slate-700/60 bg-slate-900 p-6 text-center shadow-xl">
+      <span className="inline-block rounded-full bg-blue-500/15 px-2.5 py-0.5 text-[10px] font-semibold text-blue-400">useReducer</span>
+      <h2 className="mt-2.5 text-lg font-bold text-slate-100">Reducer Counter</h2>
+      <div className="my-2 text-4xl font-extrabold text-slate-100">{state.count}</div>
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <button className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 px-4 py-2 text-[13px] font-semibold text-white transition hover:brightness-110"
+          onClick={() => dispatch({ type: 'inc' })}>+1</button>
+        <button className="rounded-lg border border-slate-600 px-4 py-2 text-[13px] font-semibold text-slate-200 transition hover:border-blue-500"
+          onClick={() => dispatch({ type: 'dec' })}>-1</button>
+        <button className="rounded-lg border border-slate-600 px-4 py-2 text-[13px] font-semibold text-slate-200 transition hover:border-blue-500"
+          onClick={() => dispatch({ type: 'set', value: 0 })}>0</button>
       </div>
-      <p style={{ fontSize: 12, color: odd ? '#f0d060' : '#5a6a90', marginTop: 12 }}>
+      <p className="mt-3 text-xs text-amber-400/90">
         {odd ? 'odd number' : 'even number'} · every action goes through the reducer
       </p>
     </div>
@@ -193,13 +203,10 @@ function ThemedBox() {
   const theme = React.useContext(ThemeCtx);
   const dark = theme === 'dark';
   return (
-    <div style={{
-      border: '1px solid ' + (dark ? '#1e3058' : '#dde3f0'),
-      borderRadius: 10, padding: 14, marginBottom: 10,
-      background: dark ? '#111d38' : '#f4f6fb',
-      color: dark ? '#e4eaf5' : '#0f1729',
-      fontSize: 13
-    }}>
+    <div className={
+      'mb-2.5 rounded-xl border p-3.5 text-[13px] ' +
+      (dark ? 'border-slate-600 bg-slate-800 text-slate-200' : 'border-slate-300 bg-slate-100 text-slate-700')
+    }>
       I am <b>{theme}</b> — no props needed, I read it from context.
     </div>
   );
@@ -208,14 +215,15 @@ function ThemedBox() {
 function App() {
   const [theme, setTheme] = React.useState('dark');
   return (
-    <div className="demo-card">
-      <span className="demo-tag">useContext</span>
-      <h2 style={{ margin: '10px 0 12px', fontSize: 18 }}>Theme via context</h2>
+    <div className="max-w-md w-full rounded-2xl border border-slate-700/60 bg-slate-900 p-6 shadow-xl">
+      <span className="inline-block rounded-full bg-blue-500/15 px-2.5 py-0.5 text-[10px] font-semibold text-blue-400">useContext</span>
+      <h2 className="mt-2.5 mb-3 text-lg font-bold text-slate-100">Theme via context</h2>
       <ThemeCtx.Provider value={theme}>
         <ThemedBox />
         <ThemedBox />
       </ThemeCtx.Provider>
-      <button className="demo-btn" onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}>
+      <button className="rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 px-4 py-2 text-[13px] font-semibold text-white transition hover:brightness-110"
+        onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}>
         toggle theme
       </button>
     </div>
@@ -228,28 +236,30 @@ function App() {
     name: 'Styling & Advanced', icon: '🎨',
     sections: [
       {
-        id: 'styling', icon: '💅', title: 'Styling Components',
-        desc: 'Three built-in ways: className (CSS/Tailwind), inline style objects, and conditional classes. No framework required.',
-        points: ['<b>className</b> for stylesheets / Tailwind', '<b>style={{}}</b> — camelCase keys, object', '<b>Conditional classes</b> with ternaries'],
+        id: 'styling', icon: '💅', title: 'Styling with Tailwind',
+        desc: 'React pairs perfectly with Tailwind — className takes utility strings, and conditional classes are just string logic.',
+        points: ['<b>className</b> = utility strings', '<b>Conditional classes</b> with ternaries or template strings', 'Inline style only for <b>dynamic values</b> (colors, sizes)'],
         code: `function App() {
   const [on, setOn] = React.useState(true);
 
   return (
-    <div className="demo-card">
-      <span className="demo-tag">className + style + conditionals</span>
-      <h2 style={{ margin: '10px 0 12px', fontSize: 18 }}>Three ways to style</h2>
-      <div style={{
-        padding: 12, borderRadius: 10, marginBottom: 12,
-        background: on ? 'rgba(61,220,132,.12)' : 'rgba(228,104,106,.12)',
-        border: '1px solid ' + (on ? '#3ddc84' : '#e4686a'),
-        color: on ? '#3ddc84' : '#e4686a', fontSize: 13, fontWeight: 600
-      }}>
-        {on ? '● online' : '○ offline'} — inline style object
+    <div className="max-w-md w-full rounded-2xl border border-slate-700/60 bg-slate-900 p-6 shadow-xl">
+      <span className="inline-block rounded-full bg-blue-500/15 px-2.5 py-0.5 text-[10px] font-semibold text-blue-400">Tailwind className</span>
+      <h2 className="mt-2.5 mb-3 text-lg font-bold text-slate-100">Utilities, not CSS files</h2>
+      <div className={
+        'mb-3 rounded-xl border p-3 text-[13px] font-semibold ' +
+        (on ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : 'border-rose-500 bg-rose-500/10 text-rose-400')
+      }>
+        {on ? '● online' : '○ offline'} — conditional classes
       </div>
-      <div className="demo-code" style={{ marginBottom: 12 }}>
-        className="demo-btn {on ? 'primary' : 'ghost'}"
+      <div className="mb-3 rounded-lg border border-slate-700 bg-slate-800/60 px-2.5 py-2 font-mono text-[11.5px] text-slate-300">
+        className={"demo-btn " + (on ? "primary" : "ghost")}
       </div>
-      <button className={'demo-btn' + (on ? '' : ' ghost')} onClick={() => setOn(o => !o)}>
+      <button className={
+        'rounded-lg px-4 py-2 text-[13px] font-semibold transition ' +
+        (on ? 'bg-gradient-to-br from-blue-500 to-purple-500 text-white hover:brightness-110'
+            : 'border border-slate-600 text-slate-200 hover:border-blue-500')
+      } onClick={() => setOn(o => !o)}>
         toggle
       </button>
     </div>
@@ -266,8 +276,7 @@ function App() {
   render() {
     if (this.state.error) {
       return (
-        <div style={{ border: '1px solid #e4686a', borderRadius: 10, padding: 14,
-          background: 'rgba(228,104,106,.08)', color: '#e4686a', fontSize: 12.5 }}>
+        <div className="rounded-xl border border-rose-500 bg-rose-500/10 p-3.5 text-[12.5px] text-rose-400">
           ⚠ {this.state.error.message}
         </div>
       );
@@ -280,19 +289,20 @@ function Bomb() {
   const [boom, setBoom] = React.useState(false);
   if (boom) throw new Error('💥 I exploded!');
   return (
-    <button className="demo-btn ghost" onClick={() => setBoom(true)}>detonate</button>
+    <button className="rounded-lg border border-slate-600 px-4 py-2 text-[13px] font-semibold text-slate-200 transition hover:border-rose-500"
+      onClick={() => setBoom(true)}>detonate</button>
   );
 }
 
 function App() {
   return (
-    <div className="demo-card">
-      <span className="demo-tag">error boundary</span>
-      <h2 style={{ margin: '10px 0 12px', fontSize: 18 }}>Catch crashes, keep the app alive</h2>
+    <div className="max-w-md w-full rounded-2xl border border-slate-700/60 bg-slate-900 p-6 shadow-xl">
+      <span className="inline-block rounded-full bg-blue-500/15 px-2.5 py-0.5 text-[10px] font-semibold text-blue-400">error boundary</span>
+      <h2 className="mt-2.5 mb-3 text-lg font-bold text-slate-100">Catch crashes, keep the app alive</h2>
       <Boundary>
         <Bomb />
       </Boundary>
-      <p style={{ fontSize: 12, color: '#8895b8', marginTop: 10 }}>
+      <p className="mt-2.5 text-xs text-slate-500">
         The error is caught here — the rest of the UI keeps working.
       </p>
     </div>
