@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>React JS Playground — Live JSX Editor · Component Templates</title>
+<title>React JS Playground — Learn React · Live Editor · Component Library</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,22 +18,26 @@
     --editor-bg:#080e1a; --mono:'JetBrains Mono',monospace;
   }
   html[data-theme="light"]{
-    --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef1f8; --border:#dde3f0;
-    --text:#0f1729; --muted:#5a6a90; --editor-bg:#0f1420;
-    --accent:#2563eb; --accent2:#7c5ce0;
+    --bg:#f4f6fb; --surface:#fff; --surface2:#eef1f8; --border:#dde3f0;
+    --text:#0f1729; --muted:#5a6a90; --accent:#2563eb; --accent2:#7c5ce0;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
   ::-webkit-scrollbar{width:6px;height:6px}
   ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
   ::selection{background:rgba(74,140,244,.4);color:#fff}
+  a{color:var(--accent);text-decoration:none}
 
-  header{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;z-index:10}
+  header{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;z-index:10;flex-wrap:wrap}
   .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:15px;letter-spacing:-.02em;white-space:nowrap}
   .logo .atom{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px}
-  .logo small{font-weight:600;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-left:2px}
+  .logo small{font-weight:600;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+  .nav-links{display:flex;gap:4px;margin-left:10px}
+  .nav-links button{background:none;border:none;color:var(--muted);font:600 12.5px 'Inter';padding:6px 12px;border-radius:8px;cursor:pointer;transition:.15s}
+  .nav-links button:hover{color:var(--text);background:var(--surface2)}
+  .nav-links button.active{color:var(--accent);background:rgba(74,140,244,.12)}
   .spacer{flex:1}
-  .search{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;width:min(240px,28vw)}
+  .search{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;width:min(230px,30vw)}
   .search input{background:none;border:none;outline:none;color:var(--text);font:500 12.5px 'Inter';width:100%}
   .search input::placeholder{color:var(--muted)}
   .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:8px;padding:6px 12px;font:600 12px 'Inter';cursor:pointer;transition:.15s;white-space:nowrap}
@@ -44,435 +48,278 @@
   .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
   .dot.err{background:var(--red);box-shadow:0 0 8px var(--red)}
 
-  main{flex:1;display:grid;grid-template-columns:220px 1fr 1fr;min-height:0}
-  .sidebar{border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;padding:10px}
-  .sidebar h3{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:4px 4px 10px}
-  .preset{border:1px solid var(--border);border-radius:10px;padding:9px 10px;margin-bottom:7px;cursor:pointer;background:var(--surface2);transition:.15s}
-  .preset:hover{border-color:var(--accent);transform:translateX(2px)}
-  .preset.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
-  .preset .p-name{font:700 12.5px 'Inter';display:flex;justify-content:space-between;align-items:center;gap:6px}
-  .preset .p-name .mini-copy{opacity:0;font-size:11px;color:var(--muted);cursor:pointer;transition:.15s}
-  .preset:hover .mini-copy{opacity:1}
-  .preset .p-name .mini-copy:hover{color:var(--accent)}
-  .preset .p-desc{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+  .view{display:none;flex:1;min-height:0;overflow-y:auto}
+  .view.active{display:flex;flex-direction:column}
 
-  .pane{display:flex;flex-direction:column;min-width:0;min-height:0}
-  .pane-head{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  /* HOME */
+  .hero{padding:34px 24px 10px;text-align:center}
+  .hero h1{font-size:clamp(22px,3.5vw,34px);font-weight:800;letter-spacing:-.03em}
+  .hero p{color:var(--muted);font-size:13.5px;margin-top:8px;max-width:560px;margin-inline:auto}
+  .hero .tags{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .tag{display:inline-block;font:600 10px 'Inter';padding:3px 9px;border-radius:999px;background:rgba(74,140,244,.15);color:#7aa9f7}
+  .cat-grid{max-width:1080px;margin:0 auto;padding:18px 24px 40px;width:100%}
+  .cat-title{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:18px 0 10px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+  .card{border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;background:var(--surface);transition:.15s;text-align:left}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(74,140,244,.12)}
+  .card .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:16px;background:linear-gradient(135deg,rgba(74,140,244,.18),rgba(155,124,247,.18));margin-bottom:9px}
+  .card h3{font-size:13.5px;font-weight:700}
+  .card p{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.5}
+
+  /* LESSON */
+  .lesson-wrap{max-width:1200px;margin:0 auto;padding:20px 24px 30px;width:100%}
+  .crumb{font:600 11px 'Inter';color:var(--muted);cursor:pointer;margin-bottom:12px;display:inline-block}
+  .crumb:hover{color:var(--accent)}
+  .lesson-head h2{font-size:22px;font-weight:800;letter-spacing:-.02em}
+  .lesson-head .desc{color:var(--muted);font-size:13px;margin-top:6px;max-width:640px;line-height:1.6}
+  .points{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 16px}
+  .point{font-size:11.5px;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:5px 12px}
+  .point b{color:var(--accent)}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:380px;flex:1}
+  .pane{display:flex;flex-direction:column;min-width:0;min-height:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface)}
+  .pane-head{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--surface)}
   .pane-head .tag{margin-left:auto;font:600 10px var(--mono);color:var(--accent)}
-  #editor{flex:1;border:none;outline:none;resize:none;background:var(--editor-bg);color:#d7e2f8;font:12.5px/1.65 var(--mono);padding:14px 16px;tab-size:2}
+  #editor{flex:1;border:none;outline:none;resize:none;background:var(--editor-bg);color:#d7e2f8;font:12.5px/1.65 var(--mono);padding:14px 16px;tab-size:2;min-height:300px}
   .error-panel{display:none;background:rgba(228,104,106,.1);border-top:1px solid rgba(228,104,106,.4);color:#ffb3b5;font:11.5px/1.6 var(--mono);padding:10px 14px;max-height:130px;overflow:auto;white-space:pre-wrap}
   #preview{flex:1;overflow:auto;padding:20px;display:flex;align-items:flex-start;justify-content:center}
   #preview .empty{color:var(--muted);font-size:12.5px;align-self:center}
 
-  /* demo component styles (shared by presets) */
+  /* demo styles shared by examples */
   .demo-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;max-width:420px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.25)}
   .demo-btn{background:linear-gradient(135deg,#4a8cf4,#9b7cf7);color:#fff;border:none;border-radius:9px;padding:9px 16px;font:600 13px 'Inter';cursor:pointer;transition:.15s}
   .demo-btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
   .demo-btn.ghost{background:none;border:1px solid var(--border);color:var(--text)}
+  .demo-btn.small{padding:5px 10px;font-size:11.5px}
   .demo-input{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 12px;font:500 12.5px 'Inter';outline:none;width:100%}
   .demo-input:focus{border-color:var(--accent)}
   .demo-tag{display:inline-block;font:600 10px 'Inter';padding:3px 9px;border-radius:999px;background:rgba(74,140,244,.15);color:#7aa9f7}
   .demo-row{display:flex;gap:8px;align-items:center}
+  .demo-code{font-family:var(--mono);font-size:11.5px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text)}
 
   #toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:var(--green);color:#04210f;font:700 12px 'Inter';padding:9px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
   #toast.show{opacity:1;transform:translate(-50%,0)}
 
-  @media(max-width:900px){ main{grid-template-columns:1fr;grid-template-rows:auto 1fr 1fr} .sidebar{order:-1;border-right:none;border-bottom:1px solid var(--border);max-height:170px} }
+  @media(max-width:860px){ .split{grid-template-columns:1fr} }
 </style>
 </head>
 <body data-theme="dark">
 
 <header>
-  <div class="logo"><div class="atom">⚛</div>React <small>Playground</small></div>
+  <div class="logo" onclick="showHome()" style="cursor:pointer"><div class="atom">⚛</div>React <small>Playground</small></div>
+  <div class="nav-links">
+    <button id="navHome" class="active" onclick="showHome()">Home</button>
+    <button id="navComponents" onclick="showComponents()">Components</button>
+    <button id="navRepl" onclick="openRepl()">REPL</button>
+  </div>
   <div class="spacer"></div>
-  <a href="https://attilahuns288452.github.io/tailwind-playground/" class="btn" title="Tailwind CSS Playground" style="text-decoration:none">🎨 Tailwind</a>
-  <div class="status" id="status"><span class="dot" id="statusDot"></span><span id="statusText">Ready</span></div>
-  <button class="btn" id="runBtn" title="Ctrl+Enter">▶ Run</button>
+  <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Ready</span></div>
   <button class="btn" id="copyBtn">📋 Copy</button>
-  <div class="search">🔍<input id="search" placeholder="Filter templates…" spellcheck="false"></div>
-  <button class="btn" id="themeBtn" title="Toggle theme">🌓</button>
+  <div class="search">🔍<input id="search" placeholder="Search lessons & components…" spellcheck="false"></div>
+  <button class="btn" id="themeBtn">☀️</button>
+  <a class="btn" href="https://attilahuns288452.github.io/tailwind-playground/" title="Tailwind CSS Playground" style="text-decoration:none">🎨</a>
 </header>
 
-<main>
-  <aside class="sidebar">
-    <h3>Component Templates</h3>
-    <div id="presetList"></div>
-  </aside>
+<!-- HOME -->
+<div class="view active" id="viewHome">
+  <div class="hero">
+    <h1>Learn React by <span style="background:linear-gradient(135deg,#4a8cf4,#9b7cf7);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">doing it live</span></h1>
+    <p>Every lesson ships with runnable JSX — edit the code on the left, watch it render instantly on the right. No build step, no setup.</p>
+    <div class="tags"><span class="tag">JSX</span><span class="tag">Hooks</span><span class="tag">State</span><span class="tag">Props</span><span class="tag">18 components</span></div>
+  </div>
+  <div class="cat-grid" id="catGrid"></div>
+</div>
 
-  <section class="pane">
-    <div class="pane-head">Editor <span class="tag">.jsx</span></div>
-    <textarea id="editor" spellcheck="false"></textarea>
-    <div class="error-panel" id="errorPanel"></div>
-  </section>
+<!-- LESSON / REPL -->
+<div class="view" id="viewLesson">
+  <div class="lesson-wrap">
+    <span class="crumb" id="crumb">← Home</span>
+    <div class="lesson-head">
+      <h2 id="lessonTitle"></h2>
+      <p class="desc" id="lessonDesc"></p>
+      <div class="points" id="lessonPoints"></div>
+    </div>
+    <div class="split">
+      <div class="pane">
+        <div class="pane-head">Editor <span class="tag">.jsx</span></div>
+        <textarea id="editor" spellcheck="false"></textarea>
+        <div class="error-panel" id="errorPanel"></div>
+      </div>
+      <div class="pane">
+        <div class="pane-head">Live Preview <span class="tag" id="renderTime"></span></div>
+        <div id="preview"><div class="empty">▸ Write a component named <b style="color:var(--text)">App</b> — it renders here instantly.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <section class="pane">
-    <div class="pane-head">Live Preview <span class="tag" id="renderTime"></span></div>
-    <div id="preview"><div class="empty">▸ Write a component named <b style="color:var(--text)">App</b> — it renders here instantly.</div></div>
-  </section>
-</main>
+<!-- COMPONENTS -->
+<div class="view" id="viewComponents">
+  <div class="lesson-wrap">
+    <div class="lesson-head">
+      <h2>Component Library</h2>
+      <p class="desc">Ready-made React components — open one, copy the code, drop it in your app.</p>
+    </div>
+    <div class="cards" id="compGrid" style="margin-top:16px"></div>
+  </div>
+</div>
 
 <div id="toast">✓ Copied!</div>
-
+<script src="js/lessons.js"></script>
+<script src="js/lessons2.js"></script>
+<script src="js/components.js"></script>
 <script>
-/* ============================================================
-   React JS Playground — single-file live JSX editor
-   React 18 + Babel standalone, no build step.
-   ponytail: user code must define a component named `App`.
-   ============================================================ */
+/* ============ REPL ============ */
+const editor=document.getElementById('editor'), preview=document.getElementById('preview'),
+      errorPanel=document.getElementById('errorPanel'), renderTime=document.getElementById('renderTime'),
+      statusDot=document.getElementById('statusDot'), statusText=document.getElementById('statusText');
+let root=null, runTimer=null;
+const HOOKS=['useState','useEffect','useRef','useMemo','useCallback','useReducer','useContext','useLayoutEffect'];
 
-const STARTER = `function App() {
-  const [count, setCount] = React.useState(0);
-  const [step, setStep] = React.useState(1);
-
-  return (
-    <div className="demo-card">
-      <span className="demo-tag">useState</span>
-      <h2 style={{ margin: '10px 0 6px', fontSize: 18 }}>Counter</h2>
-      <p style={{ color: '#8895b8', fontSize: 13, marginBottom: 14 }}>
-        Click to increment — state lives in the component.
-      </p>
-      <div className="demo-row" style={{ marginBottom: 10 }}>
-        <button className="demo-btn" onClick={() => setCount(c => c + step)}>+{step}</button>
-        <button className="demo-btn ghost" onClick={() => setCount(0)}>Reset</button>
-        <b style={{ fontSize: 20, marginLeft: 8 }}>{count}</b>
-      </div>
-      <label style={{ fontSize: 12, color: '#8895b8' }}>
-        Step: <input type="range" min="1" max="10" value={step}
-          onChange={e => setStep(+e.target.value)} />
-      </label>
-    </div>
-  );
-}`;
-
-const PRESETS = [
-  { name: 'Counter', desc: 'useState + range slider step', code: STARTER },
-  { name: 'Todo List', desc: 'add / toggle / delete items', code: `function App() {
-  const [todos, setTodos] = React.useState([
-    { id: 1, text: 'Learn React', done: true },
-    { id: 2, text: 'Build a playground', done: false },
-  ]);
-  const [text, setText] = React.useState('');
-
-  const add = () => {
-    if (!text.trim()) return;
-    setTodos(t => [...t, { id: Date.now(), text, done: false }]);
-    setText('');
-  };
-
-  return (
-    <div className="demo-card">
-      <span className="demo-tag">useState</span>
-      <h2 style={{ margin: '10px 0 12px', fontSize: 18 }}>Todo List</h2>
-      <div className="demo-row" style={{ marginBottom: 12 }}>
-        <input className="demo-input" placeholder="Add a todo…"
-          value={text} onChange={e => setText(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && add()} />
-        <button className="demo-btn" onClick={add}>Add</button>
-      </div>
-      <ul style={{ listStyle: 'none', display: 'grid', gap: 6 }}>
-        {todos.map(t => (
-          <li key={t.id} className="demo-row" style={{ justifyContent: 'space-between', background: '#111d38', borderRadius: 8, padding: '7px 10px' }}>
-            <span style={{ textDecoration: t.done ? 'line-through' : 'none', opacity: t.done ? .5 : 1, fontSize: 13 }}>
-              {t.text}
-            </span>
-            <span className="demo-row">
-              <button className="btn" style={{ padding: '3px 8px' }} onClick={() => setTodos(x => x.map(i => i.id === t.id ? { ...i, done: !i.done } : i))}>
-                {t.done ? '↩' : '✓'}
-              </button>
-              <button className="btn" style={{ padding: '3px 8px' }} onClick={() => setTodos(x => x.filter(i => i.id !== t.id))}>✕</button>
-            </span>
-          </li>
-        ))}
-      </ul>
-      <p style={{ fontSize: 11, color: '#5a6a90', marginTop: 10 }}>{todos.length} items · Enter adds</p>
-    </div>
-  );
-}` },
-  { name: 'Tabs', desc: 'active tab state', code: `function App() {
-  const [tab, setTab] = React.useState('home');
-  const TABS = {
-    home:  '🏠 Home — the default view.',
-    code:  '💻 Code — where components live.',
-    about: '✨ About — this is a tab demo.',
-  };
-  return (
-    <div className="demo-card">
-      <span className="demo-tag">conditional render</span>
-      <h2 style={{ margin: '10px 0 12px', fontSize: 18 }}>Tabs</h2>
-      <div className="demo-row" style={{ marginBottom: 14 }}>
-        {Object.keys(TABS).map(k => (
-          <button key={k} className="demo-btn" style={{ opacity: tab === k ? 1 : .45, padding: '7px 14px' }}
-            onClick={() => setTab(k)}>{k}</button>
-        ))}
-      </div>
-      <p style={{ fontSize: 13.5, color: '#8895b8', background: '#111d38', borderRadius: 8, padding: 12 }}>{TABS[tab]}</p>
-    </div>
-  );
-}` },
-  { name: 'Accordion', desc: 'expand / collapse sections', code: `function Item({ title, children, open, onToggle }) {
-  return (
-    <div style={{ border: '1px solid #1e3058', borderRadius: 10, marginBottom: 8, overflow: 'hidden' }}>
-      <button className="demo-btn ghost" style={{ width: '100%', justifyContent: 'space-between', borderRadius: 0, display: 'flex' }}
-        onClick={onToggle}>
-        <span>{title}</span><span>{open ? '−' : '+'}</span>
-      </button>
-      {open && <div style={{ padding: '10px 14px', fontSize: 12.5, color: '#8895b8', background: '#111d38' }}>{children}</div>}
-    </div>
-  );
-}
-
-function App() {
-  const [open, setOpen] = React.useState(0);
-  const items = [
-    ['What is JSX?', 'A syntax extension that mixes HTML-like markup into JavaScript.'],
-    ['What are hooks?', 'Functions like useState and useEffect that add state and lifecycle to components.'],
-    ['Why key props?', 'Keys help React identify which list items changed, got added, or were removed.'],
-  ];
-  return (
-    <div className="demo-card">
-      <span className="demo-tag">props + state</span>
-      <h2 style={{ margin: '10px 0 12px', fontSize: 18 }}>Accordion</h2>
-      {items.map(([t, d], i) => (
-        <Item key={t} title={t} open={open === i} onToggle={() => setOpen(open === i ? -1 : i)}>{d}</Item>
-      ))}
-    </div>
-  );
-}` },
-  { name: 'Stopwatch', desc: 'useEffect + interval cleanup', code: `function App() {
-  const [ms, setMs] = React.useState(0);
-  const [running, setRunning] = React.useState(false);
-
-  React.useEffect(() => {
-    if (!running) return;
-    const id = setInterval(() => setMs(m => m + 10), 10);
-    return () => clearInterval(id);   // cleanup on unmount / stop
-  }, [running]);
-
-  const fmt = m => {
-    const min = String(Math.floor(m / 60000)).padStart(2, '0');
-    const sec = String(Math.floor(m / 1000) % 60).padStart(2, '0');
-    const cen = String(Math.floor(m / 10) % 100).padStart(2, '0');
-    return min + ':' + sec + '.' + cen;
-  };
-
-  return (
-    <div className="demo-card" style={{ textAlign: 'center' }}>
-      <span className="demo-tag">useEffect</span>
-      <h2 style={{ margin: '10px 0 4px', fontSize: 18 }}>Stopwatch</h2>
-      <div style={{ fontFamily: 'JetBrains Mono', fontSize: 38, fontWeight: 700, margin: '10px 0 16px', letterSpacing: 2 }}>
-        {fmt(ms)}
-      </div>
-      <div className="demo-row" style={{ justifyContent: 'center' }}>
-        <button className="demo-btn" onClick={() => setRunning(r => !r)}>{running ? '⏸ Pause' : '▶ Start'}</button>
-        <button className="demo-btn ghost" onClick={() => { setRunning(false); setMs(0); }}>Reset</button>
-      </div>
-      <p style={{ fontSize: 11, color: '#5a6a90', marginTop: 12 }}>interval cleaned up when stopped</p>
-    </div>
-  );
-}` },
-  { name: 'Color Picker', desc: 'controlled inputs + derived value', code: `function App() {
-  const [hue, setHue] = React.useState(210);
-  const [sat, setSat] = React.useState(80);
-  const [light, setLight] = React.useState(55);
-  const color = 'hsl(' + hue + ',' + sat + '%,' + light + '%)';
-
-  const Slider = ({ label, value, set, max }) => (
-    <label style={{ fontSize: 12, color: '#8895b8', display: 'grid', gap: 4, marginBottom: 10 }}>
-      {label} <b style={{ color: '#e4eaf5' }}>{value}</b>
-      <input type="range" min="0" max={max} value={value} onChange={e => set(+e.target.value)} />
-    </label>
-  );
-
-  return (
-    <div className="demo-card">
-      <span className="demo-tag">derived state</span>
-      <h2 style={{ margin: '10px 0 12px', fontSize: 18 }}>Color Picker</h2>
-      <div style={{ height: 90, borderRadius: 10, background: color, marginBottom: 14, border: '1px solid #1e3058' }} />
-      <Slider label="Hue" value={hue} set={setHue} max={360} />
-      <Slider label="Saturation" value={sat} set={setSat} max={100} />
-      <Slider label="Lightness" value={light} set={setLight} max={100} />
-      <code style={{ fontSize: 12, fontFamily: 'JetBrains Mono', color: color }}>{color}</code>
-    </div>
-  );
-}` },
-  { name: 'Form', desc: 'controlled form + validation', code: `function App() {
-  const [form, setForm] = React.useState({ name: '', email: '' });
-  const [sent, setSent] = React.useState(false);
-  const [err, setErr] = React.useState('');
-
-  const submit = e => {
-    e.preventDefault();
-    if (!form.name.trim() || !/^[^@\\s]+@[^@\\s]+$/.test(form.email)) {
-      setErr('Fill a valid name + email.');
-      return;
-    }
-    setErr('');
-    setSent(true);
-  };
-
-  return (
-    <div className="demo-card">
-      <span className="demo-tag">controlled form</span>
-      <h2 style={{ margin: '10px 0 12px', fontSize: 18 }}>Sign Up</h2>
-      {sent ? (
-        <div style={{ textAlign: 'center', padding: '18px 0' }}>
-          <div style={{ fontSize: 30 }}>🎉</div>
-          <p style={{ margin: '8px 0', fontSize: 14 }}>Welcome, {form.name}!</p>
-          <button className="demo-btn ghost" onClick={() => { setSent(false); setForm({ name: '', email: '' }); }}>Reset</button>
-        </div>
-      ) : (
-        <form onSubmit={submit} style={{ display: 'grid', gap: 10 }}>
-          <input className="demo-input" placeholder="Name" value={form.name}
-            onChange={e => setForm({ ...form, name: e.target.value })} />
-          <input className="demo-input" placeholder="Email" type="email" value={form.email}
-            onChange={e => setForm({ ...form, email: e.target.value })} />
-          {err && <p style={{ color: '#e4686a', fontSize: 11.5 }}>{err}</p>}
-          <button className="demo-btn" type="submit">Submit</button>
-        </form>
-      )}
-    </div>
-  );
-}` },
-  { name: 'Profile Card', desc: 'props + list rendering', code: `const stats = [
-  { label: 'Repos', value: 42 },
-  { label: 'Stars', value: 128 },
-  { label: 'Days', value: 365 },
-];
-
-function App() {
-  return (
-    <div className="demo-card" style={{ textAlign: 'center' }}>
-      <div style={{ width: 64, height: 64, borderRadius: '50%', margin: '0 auto 10px',
-        background: 'linear-gradient(135deg, #4a8cf4, #9b7cf7)', display: 'grid', placeItems: 'center',
-        fontSize: 26, color: '#fff', fontWeight: 800 }}>A</div>
-      <h2 style={{ fontSize: 17 }}>Attila</h2>
-      <p style={{ fontSize: 12.5, color: '#8895b8', margin: '4px 0 14px' }}>Filipino · PHP pesos · React fan</p>
-      <div className="demo-row" style={{ justifyContent: 'center', marginBottom: 14 }}>
-        {stats.map(s => (
-          <div key={s.label} style={{ background: '#111d38', borderRadius: 10, padding: '8px 14px', minWidth: 70 }}>
-            <div style={{ fontWeight: 800, fontSize: 15 }}>{s.value}</div>
-            <div style={{ fontSize: 10, color: '#8895b8' }}>{s.label}</div>
-          </div>
-        ))}
-      </div>
-      <button className="demo-btn">Follow</button>
-    </div>
-  );
-}` },
-  { name: 'Clock', desc: 'live time with useEffect', code: `function App() {
-  const [now, setNow] = React.useState(new Date());
-
-  React.useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const fmt = n => String(n).padStart(2, '0');
-  const day = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-
-  return (
-    <div className="demo-card" style={{ textAlign: 'center' }}>
-      <span className="demo-tag">live tick</span>
-      <h2 style={{ margin: '10px 0 4px', fontSize: 18 }}>{day}</h2>
-      <div style={{ fontFamily: 'JetBrains Mono', fontSize: 42, fontWeight: 700, letterSpacing: 3, margin: '8px 0' }}>
-        {fmt(now.getHours())}:{fmt(now.getMinutes())}:{fmt(now.getSeconds())}
-      </div>
-      <p style={{ fontSize: 11, color: '#5a6a90' }}>updates every second · interval cleaned on unmount</p>
-    </div>
-  );
-}` },
-];
-
-/* ---------- REPL ---------- */
-const editor = document.getElementById('editor');
-const preview = document.getElementById('preview');
-const errorPanel = document.getElementById('errorPanel');
-const statusDot = document.getElementById('statusDot');
-const statusText = document.getElementById('statusText');
-const renderTime = document.getElementById('renderTime');
-let root = null, runTimer = null;
-
-const HOOKS = ['useState','useEffect','useRef','useMemo','useCallback','useReducer','useContext','useLayoutEffect'];
-
-function compile() {
-  const code = editor.value;
-  const t0 = performance.now();
-  try {
-    const out = Babel.transform(code, { presets: ['react'] }).code;
-    const factory = new Function('React', 'createElement', ...HOOKS,
-      out + '\n;return typeof App !== "undefined" ? App : null;');
-    const App = factory(React, React.createElement, ...HOOKS.map(h => React[h]));
-    if (!App) throw new Error('Define a component named App (e.g. function App() { return <div>hi</div>; })');
-    if (root) { root.unmount(); root = null; }
-    preview.innerHTML = '';
-    root = ReactDOM.createRoot(preview);
+function compile(){
+  const code=editor.value, t0=performance.now();
+  try{
+    const out=Babel.transform(code,{presets:['react']}).code;
+    const factory=new Function('React','createElement',...HOOKS,out+'\n;return typeof App!=="undefined"?App:null;');
+    const App=factory(React,React.createElement,...HOOKS.map(h=>React[h]));
+    if(!App) throw new Error('Define a component named App (e.g. function App(){ return <div>hi</div> })');
+    if(root){root.unmount();root=null;}
+    preview.innerHTML='';
+    root=ReactDOM.createRoot(preview);
     root.render(React.createElement(App));
-    errorPanel.style.display = 'none';
-    statusDot.className = 'dot';
-    statusText.textContent = 'Rendered';
-    renderTime.textContent = ((performance.now() - t0) / 1000).toFixed(2) + 's';
-  } catch (e) {
-    if (root) { root.unmount(); root = null; }
-    errorPanel.style.display = 'block';
-    errorPanel.textContent = '⚠ ' + (e.message || e);
-    statusDot.className = 'dot err';
-    statusText.textContent = 'Error';
-    renderTime.textContent = '';
+    errorPanel.style.display='none';
+    statusDot.className='dot'; statusText.textContent='Rendered';
+    renderTime.textContent=((performance.now()-t0)/1000).toFixed(2)+'s';
+  }catch(e){
+    if(root){root.unmount();root=null;}
+    errorPanel.style.display='block';
+    errorPanel.textContent='⚠ '+(e.message||e);
+    statusDot.className='dot err'; statusText.textContent='Error';
+    renderTime.textContent='';
   }
 }
+function schedule(){clearTimeout(runTimer);runTimer=setTimeout(compile,350);}
+editor.addEventListener('input',schedule);
+editor.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();compile();}});
+document.getElementById('copyBtn').addEventListener('click',()=>copy(editor.value));
 
-function schedule() { clearTimeout(runTimer); runTimer = setTimeout(compile, 350); }
-editor.addEventListener('input', schedule);
-document.getElementById('runBtn').addEventListener('click', compile);
-editor.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); compile(); } });
+/* ============ NAV ============ */
+const views={home:document.getElementById('viewHome'),lesson:document.getElementById('viewLesson'),components:document.getElementById('viewComponents')};
+const navBtns={home:document.getElementById('navHome'),components:document.getElementById('navComponents'),repl:document.getElementById('navRepl')};
+let current={type:'home',id:null};
 
-/* ---------- presets sidebar ---------- */
-const list = document.getElementById('presetList');
-let activePreset = 0;
+function show(v){
+  Object.values(views).forEach(x=>x.classList.remove('active'));
+  views[v].classList.add('active');
+  Object.values(navBtns).forEach(b=>b.classList.remove('active'));
+  if(v==='home')navBtns.home.classList.add('active');
+  if(v==='components')navBtns.components.classList.add('active');
+  if(v==='lesson'&&current.type==='repl')navBtns.repl.classList.add('active');
+  if(v==='lesson'&&current.type==='lesson')navBtns.home.classList.add('active');
+}
+function showHome(){current={type:'home'};show('home');renderHome();location.hash='';}
+function showComponents(){current={type:'components'};show('components');renderComponents();location.hash='#/components';}
+function openRepl(){current={type:'repl',id:'repl'};show('lesson');
+  document.getElementById('crumb').textContent='← Home';document.getElementById('crumb').onclick=showHome;
+  document.getElementById('lessonTitle').textContent='Free-form REPL';
+  document.getElementById('lessonDesc').textContent='Write any component you like. useState, useEffect, useRef and friends are available directly — define App and it renders.';
+  document.getElementById('lessonPoints').innerHTML='';
+  if(!editor.value.trim())editor.value=STARTER;
+  compile();location.hash='#/repl';}
 
-function renderPresets(filter) {
-  list.innerHTML = '';
-  PRESETS.forEach((p, i) => {
-    if (filter && !(p.name + ' ' + p.desc).toLowerCase().includes(filter)) return;
-    const el = document.createElement('div');
-    el.className = 'preset' + (i === activePreset ? ' active' : '');
-    el.innerHTML = '<div class="p-name"><span></span><span class="mini-copy" title="Copy code">📋</span></div><div class="p-desc"></div>';
-    el.querySelector('span').textContent = p.name;
-    el.querySelector('.p-desc').textContent = p.desc;
-    el.addEventListener('click', e => {
-      if (e.target.classList.contains('mini-copy')) { copy(p.code); return; }
-      activePreset = i; renderPresets(document.getElementById('search').value.trim().toLowerCase());
-      editor.value = p.code; compile();
+function openSection(id){
+  const s=findLesson(id); if(!s)return;
+  current={type:'lesson',id};
+  show('lesson');
+  document.getElementById('crumb').textContent='← '+s.catName;document.getElementById('crumb').onclick=showHome;
+  document.getElementById('lessonTitle').textContent=s.title;
+  document.getElementById('lessonDesc').textContent=s.desc;
+  document.getElementById('lessonPoints').innerHTML=(s.points||[]).map(p=>'<span class="point">'+p+'</span>').join('');
+  editor.value=s.code;compile();location.hash='#/'+id;
+}
+function openComponent(id){
+  const c=COMPONENTS.find(x=>x.id===id); if(!c)return;
+  current={type:'component',id};
+  show('lesson');
+  document.getElementById('crumb').textContent='← Components';document.getElementById('crumb').onclick=showComponents;
+  document.getElementById('lessonTitle').textContent=c.name;
+  document.getElementById('lessonDesc').textContent=c.desc;
+  document.getElementById('lessonPoints').innerHTML='<span class="point"><b>component</b> ready to copy</span>';
+  editor.value=c.code;compile();location.hash='#/component/'+id;
+}
+
+/* ============ HOME ============ */
+function findLesson(id){
+  for(const c of CATEGORIES){
+    const s=c.sections.find(x=>x.id===id);
+    if(s){s.catName=c.name;return s;}
+  }
+  return null;
+}
+function renderHome(filter){
+  const grid=document.getElementById('catGrid');
+  grid.innerHTML='';
+  const f=(filter||'').toLowerCase();
+  let shown=0;
+  CATEGORIES.forEach(cat=>{
+    const secs=cat.sections.filter(s=>!f||(s.title+' '+s.desc+' '+cat.name).toLowerCase().includes(f));
+    if(!secs.length)return;
+    const block=document.createElement('div');
+    block.innerHTML='<div class="cat-title">'+cat.icon+' '+cat.name+'</div><div class="cards"></div>';
+    const cards=block.querySelector('.cards');
+    secs.forEach(s=>{
+      const el=document.createElement('div');
+      el.className='card';
+      el.innerHTML='<div class="ic">'+s.icon+'</div><h3>'+s.title+'</h3><p>'+s.desc+'</p>';
+      el.onclick=()=>openSection(s.id);
+      cards.appendChild(el);shown++;
     });
-    list.appendChild(el);
+    grid.appendChild(block);
+  });
+  if(!shown)grid.innerHTML='<p style="color:var(--muted);font-size:13px;padding:30px;text-align:center">No lessons match "'+filter+'" — try "state", "props" or "hooks".</p>';
+}
+document.getElementById('search').addEventListener('input',e=>{
+  if(views.components.classList.contains('active'))renderComponents(e.target.value);
+  else renderHome(e.target.value);
+});
+
+/* ============ COMPONENTS ============ */
+function renderComponents(filter){
+  const grid=document.getElementById('compGrid');
+  grid.innerHTML='';
+  const f=(filter||'').toLowerCase();
+  COMPONENTS.forEach(c=>{
+    if(f&&!(c.name+' '+c.desc).toLowerCase().includes(f))return;
+    const el=document.createElement('div');
+    el.className='card';
+    el.innerHTML='<div class="ic">'+c.icon+'</div><h3>'+c.name+'</h3><p>'+c.desc+'</p>';
+    el.onclick=()=>openComponent(c.id);
+    grid.appendChild(el);
   });
 }
-document.getElementById('search').addEventListener('input', e => renderPresets(e.target.value.trim().toLowerCase()));
 
-/* ---------- copy + theme ---------- */
-const toast = document.getElementById('toast');
-let toastTimer;
-function copy(text) {
-  navigator.clipboard.writeText(text).catch(() => {});
-  toast.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 1400);
+/* ============ TOOLS ============ */
+const toast=document.getElementById('toast');let toastTimer;
+function copy(text){navigator.clipboard.writeText(text).catch(()=>{});toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1400);}
+const themeBtn=document.getElementById('themeBtn');
+function applyTheme(t){document.body.dataset.theme=t;themeBtn.textContent=t==='dark'?'☀️':'🌙';localStorage.setItem('react-playground-theme',t);}
+themeBtn.onclick=()=>applyTheme(document.body.dataset.theme==='dark'?'light':'dark');
+applyTheme(localStorage.getItem('react-playground-theme')||'dark');
+
+/* ============ ROUTES ============ */
+function route(){
+  const h=location.hash||'';
+  if(h==='#/components'){showComponents();return;}
+  if(h==='#/repl'){openRepl();return;}
+  const cm=h.match(/^#\/component\/(.+)$/);
+  if(cm){openComponent(decodeURIComponent(cm[1]));return;}
+  const sm=h.match(/^#\/(.+)$/);
+  if(sm){const id=decodeURIComponent(sm[1]);if(findLesson(id)){openSection(id);return;}}
+  showHome();
 }
-document.getElementById('copyBtn').addEventListener('click', () => copy(editor.value));
-
-const themeBtn = document.getElementById('themeBtn');
-function applyTheme(t) {
-  document.body.dataset.theme = t;
-  themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
-  localStorage.setItem('react-playground-theme', t);
-}
-themeBtn.addEventListener('click', () => applyTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark'));
-applyTheme(localStorage.getItem('react-playground-theme') || 'dark');
-
-/* ---------- boot ---------- */
-renderPresets('');
-editor.value = STARTER;
-compile();
+window.addEventListener('hashchange',route);
+renderHome();
+if(!editor.value.trim()){editor.value=findLesson('usestate').code;}
+route();
 </script>
 </body>
 </html>

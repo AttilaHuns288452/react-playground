@@ -1,19 +1,18 @@
 # React JS Playground
 
-A single-file, interactive React playground. Open the HTML and everything works — no build step, no dependencies.
+Learn React by doing it live — a single-file teaching playground with a real-time JSX editor. Open the HTML and everything works, no build step.
 
 ## What it is
-- **File:** `index.html` (self-contained — React 18 + Babel standalone via CDN)
-- **⚛ Live REPL** — type JSX on the left, see it render instantly on the right (define a component named `App`)
-- **🧩 9 component templates** — Counter, Todo List, Tabs, Accordion, Stopwatch, Color Picker, Form, Profile Card, Clock — each with hooks patterns (useState, useEffect, cleanup)
-- **📋 Copy-code dock**, **🔎 template search**, **🌓 dark/light toggle** (localStorage)
-- **⚠ Inline error panel** with Babel/Runtime messages
-- **Ctrl+Enter** to force re-run
+- **📚 20 interactive lessons** across 5 categories — JSX, Components & Props, State & Events, Hooks (useState/useEffect/useRef/useMemo/useCallback/useReducer/useContext), Styling & Error Boundaries
+- **⚛ Live REPL** — every lesson ships runnable JSX: edit the code, watch it render instantly (React 18 + Babel standalone via CDN)
+- **🧩 17-component library** — Button, Card, Badge, Avatar, Alert, Table, Navbar, Modal, Skeleton, Tabs, Todo, Form, Accordion, Stopwatch, Color Picker, Clock, Profile Card
+- **🔗 Deep links** — `#/usestate`, `#/component/modal`, `#/repl`… shareable URLs
+- **🔎 search**, **🌓 dark/light toggle** (localStorage), **📋 copy**, inline error panel, Ctrl+Enter re-run
 
 ## How to use
 1. Open `index.html` in any browser — no server needed.
 2. Or visit the live GitHub Pages link.
-3. To extend: presets live in the `PRESETS` array inside `index.html`.
+3. Data files: `js/lessons.js` (+ `lessons2.js`) and `js/components.js` — add a lesson or component by appending to the arrays.
 
 ## Notes
 - Ships as a static site via GitHub Pages (root, `main` branch).
